@@ -23,6 +23,7 @@
 #include "BufferCompaction.h"
 #include "HyperLogLogRank.h"
 #include "MurmurHash.h"
+#include "t1ha.h"
 #include "TypePunning.h"
 
 #include <algorithm>
@@ -301,7 +302,7 @@ extern "C" GPU_RT_STUB void agg_count_distinct_bitmap_gpu(int64_t*,
 extern "C" NEVER_INLINE void agg_approximate_count_distinct(int64_t* agg,
                                                             const int64_t key,
                                                             const uint32_t b) {
-  const uint64_t hash = MurmurHash64A(&key, sizeof(key), 0);
+  const uint64_t hash = t1ha(&key, sizeof(key), 0);
   const uint32_t index = hash >> (64 - b);
   const uint8_t rank = get_rank(hash << b, 64 - b);
   uint8_t* M = reinterpret_cast<uint8_t*>(*agg);
@@ -1065,7 +1066,7 @@ extern "C" NEVER_INLINE void linear_probabilistic_count(uint8_t* bitmap,
                                                         const uint32_t bitmap_bytes,
                                                         const uint8_t* key_bytes,
                                                         const uint32_t key_len) {
-  const uint32_t bit_pos = MurmurHash1(key_bytes, key_len, 0) % (bitmap_bytes * 8);
+  const uint32_t bit_pos = t1ha(key_bytes, key_len, 0) % (bitmap_bytes * 8);
   const uint32_t word_idx = bit_pos / 32;
   const uint32_t bit_idx = bit_pos % 32;
   reinterpret_cast<uint32_t*>(bitmap)[word_idx] |= 1 << bit_idx;

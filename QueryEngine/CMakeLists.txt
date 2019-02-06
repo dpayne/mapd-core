@@ -49,6 +49,7 @@ set(query_engine_source_files
     LLVMGlobalContext.cpp
     MaxwellCodegenPatch.cpp
     MurmurHash.cpp
+    t1ha.cpp
     NativeCodegen.cpp
     NvidiaKernel.cpp
     OutputBufferInitialization.cpp
@@ -107,6 +108,7 @@ endif()
 set(group_by_hash_test_files
     GroupByHashTest.cpp
     MurmurHash.cpp
+    t1ha.cpp
     DynamicWatchdog.cpp
     RuntimeFunctions.cpp
 )
