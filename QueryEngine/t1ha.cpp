@@ -47,11 +47,14 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <cstdint>
+#include "t1ha.h"
+
+#if defined( __AVX2__ )
+
 #include <emmintrin.h>
 #include <wmmintrin.h>
 #include <x86intrin.h>
-#include <cstdint>
-#include "t1ha.h"
 
 #define t1ha_unreachable() __builtin_unreachable()
 
@@ -123,8 +126,7 @@ static __inline uint64_t t1ha_mux64(uint64_t v, uint64_t p) {
   return r ^ (r >> 64);
 }
 
-uint64_t
-t1ha(const void *data, size_t len, uint64_t seed) {
+extern "C" NEVER_INLINE DEVICE uint64_t t1ha(const void *data, size_t len, uint64_t seed) {
   uint64_t a = seed;
   uint64_t b = len;
 
@@ -213,3 +215,10 @@ t1ha(const void *data, size_t len, uint64_t seed) {
   }
 }
 
+#else
+#include "MurmurHash.h"
+extern "C" NEVER_INLINE DEVICE uint64_t t1ha(const void *data, size_t len, uint64_t seed) {
+  return MurmurHash64A(data, len, seed);
+}
+
+#endif

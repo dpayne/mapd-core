@@ -382,6 +382,7 @@ extern "C" __device__ int64_t* get_matching_group_value_columnar(
 #include "GroupByRuntime.cpp"
 #include "JoinHashTableQueryRuntime.cpp"
 #include "MurmurHash.cpp"
+#include "t1ha.cpp"
 #include "TopKRuntime.cpp"
 
 __device__ int64_t atomicMax64(int64_t* address, int64_t val) {

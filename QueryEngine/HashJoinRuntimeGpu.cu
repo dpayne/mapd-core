@@ -15,6 +15,8 @@
  */
 #include "HashJoinRuntime.cpp"
 
+#include "t1ha.cpp"
+#include "MurmurHash.cpp"
 #include <thrust/device_ptr.h>
 #include <thrust/scan.h>
 
