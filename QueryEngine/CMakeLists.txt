@@ -48,7 +48,7 @@ set(query_engine_source_files
     LLVMFunctionAttributesUtil.cpp
     LLVMGlobalContext.cpp
     MaxwellCodegenPatch.cpp
-    MurmurHash.cpp
+    MapdHash.cpp
     NativeCodegen.cpp
     NvidiaKernel.cpp
     OutputBufferInitialization.cpp
@@ -106,7 +106,7 @@ endif()
 
 set(group_by_hash_test_files
     GroupByHashTest.cpp
-    MurmurHash.cpp
+    MapdHash.cpp
     DynamicWatchdog.cpp
     RuntimeFunctions.cpp
 )

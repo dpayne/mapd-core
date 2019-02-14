@@ -19,7 +19,7 @@
 #include "CompareKeysInl.h"
 #include "HashJoinKeyHandlers.h"
 #include "HyperLogLogRank.h"
-#include "MurmurHash1Inl.h"
+#include "MapdHash1Inl.h"
 #ifdef __CUDACC__
 #include "DecodersImpl.h"
 #include "GpuRtConstants.h"
@@ -297,7 +297,7 @@ DEVICE int write_baseline_hash_slot(const int32_t val,
                                     const bool with_val_slot,
                                     const int32_t invalid_slot_val) {
   const uint32_t h =
-      MurmurHash1Impl(key, key_component_count * sizeof(T), 0) % entry_count;
+      MapdHash1Impl(key, key_component_count * sizeof(T), 0) % entry_count;
   T* matching_group = get_matching_baseline_hash_slot_at(
       hash_buff, h, key, key_component_count, with_val_slot);
   if (!matching_group) {
@@ -488,7 +488,7 @@ DEVICE NEVER_INLINE const T* SUFFIX(get_matching_baseline_hash_slot_readonly)(
     const T* composite_key_dict,
     const size_t entry_count) {
   const uint32_t h =
-      MurmurHash1Impl(key, key_component_count * sizeof(T), 0) % entry_count;
+      MapdHash1Impl(key, key_component_count * sizeof(T), 0) % entry_count;
   uint32_t off = h * key_component_count;
   if (keys_are_equal(&composite_key_dict[off], key, key_component_count)) {
     return &composite_key_dict[off];
@@ -764,7 +764,7 @@ GLOBAL void SUFFIX(approximate_distinct_tuples_impl)(uint8_t* hll_buffer,
     }
 
     const uint64_t hash =
-        MurmurHash64AImpl(key_scratch_buff, key_component_count * sizeof(int64_t), 0);
+        MapdHash64AImpl(key_scratch_buff, key_component_count * sizeof(int64_t), 0);
     const uint32_t index = hash >> (64 - b);
     const auto rank = get_rank(hash << b, 64 - b);
 #ifdef __CUDACC__

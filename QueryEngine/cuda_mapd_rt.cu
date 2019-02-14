@@ -381,7 +381,7 @@ extern "C" __device__ int64_t* get_matching_group_value_columnar(
 
 #include "GroupByRuntime.cpp"
 #include "JoinHashTableQueryRuntime.cpp"
-#include "MurmurHash.cpp"
+#include "MapdHash.cpp"
 #include "TopKRuntime.cpp"
 
 __device__ int64_t atomicMax64(int64_t* address, int64_t val) {
@@ -876,7 +876,7 @@ extern "C" __device__ void linear_probabilistic_count(uint8_t* bitmap,
                                                       const uint32_t bitmap_bytes,
                                                       const uint8_t* key_bytes,
                                                       const uint32_t key_len) {
-  const uint32_t bit_pos = MurmurHash1(key_bytes, key_len, 0) % (bitmap_bytes * 8);
+  const uint32_t bit_pos = MapdHash1(key_bytes, key_len, 0) % (bitmap_bytes * 8);
   const uint32_t word_idx = bit_pos / 32;
   const uint32_t bit_idx = bit_pos % 32;
   atomicOr(((uint32_t*)bitmap) + word_idx, 1 << bit_idx);
@@ -935,7 +935,7 @@ extern "C" __device__ void agg_approximate_count_distinct_gpu(
     const uint32_t b,
     const int64_t base_dev_addr,
     const int64_t base_host_addr) {
-  const uint64_t hash = MurmurHash64A(&key, sizeof(key), 0);
+  const uint64_t hash = MapdHash64A(&key, sizeof(key), 0);
   const uint32_t index = hash >> (64 - b);
   const int32_t rank = get_rank(hash << b, 64 - b);
   const int64_t host_addr = *agg;

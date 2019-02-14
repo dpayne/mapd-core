@@ -73,6 +73,11 @@ if(PREFER_STATIC_LIBS)
   set(CUDA_USE_STATIC_CUDA_RUNTIME ON)
 endif()
 
+option(ENABLE_XXH "Enable XXH hashing algortihm" OFF )
+if(ENABLE_XXH)
+  add_definitions("-DUSE_XXH")
+endif()
+
 option(ENABLE_JAVA_REMOTE_DEBUG "Enable Java Remote Debug" OFF )
 if(ENABLE_JAVA_REMOTE_DEBUG)
   add_definitions("-DENABLE_JAVA_REMOTE_DEBUG")
@@ -174,7 +179,7 @@ else()
     list(INSERT Boost_LIBRARIES 0 pthread)
   endif()
 endif()
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-local-typedefs -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1=1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2=1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4=1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8=1 -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -Wall -Wno-unused-local-typedefs -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1=1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2=1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4=1 -D__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8=1 -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS")
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-register")
 endif()
@@ -516,7 +521,7 @@ add_custom_target(rerun_cmake ALL
   )
 add_dependencies(omnisci_server rerun_cmake)
 
-target_link_libraries(omnisci_server mapd_thrift thrift_handler ${MAPD_LIBRARIES} ${Boost_LIBRARIES} ${Glog_LIBRARIES} ${CMAKE_DL_LIBS} ${CUDA_LIBRARIES} ${LLVM_LINKER_FLAGS} ${PROFILER_LIBS} ${CURSES_LIBRARIES} ${ZLIB_LIBRARIES})
+target_link_libraries(omnisci_server mapd_thrift thrift_handler ${MAPD_LIBRARIES} ${Boost_LIBRARIES} ${Glog_LIBRARIES} ${CMAKE_DL_LIBS} ${CUDA_LIBRARIES} ${LLVM_LINKER_FLAGS} ${PROFILER_LIBS} ${CURSES_LIBRARIES} ${ZLIB_LIBRARIES} crypto ssl)
 
 target_link_libraries(initdb mapd_thrift DataMgr ${MAPD_LIBRARIES} ${Boost_LIBRARIES} ${Glog_LIBRARIES} ${CMAKE_DL_LIBS} ${CUDA_LIBRARIES} ${LLVM_LINKER_FLAGS} ${CURSES_LIBRARIES} ${ZLIB_LIBRARIES})
 

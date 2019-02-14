@@ -16,7 +16,7 @@
 
 #include "../Shared/geo_compression.h"
 #include "CompareKeysInl.h"
-#include "MurmurHash.h"
+#include "MapdHash.h"
 
 DEVICE bool compare_to_key(const int8_t* entry,
                            const int8_t* key,
@@ -57,7 +57,7 @@ FORCE_INLINE DEVICE int64_t baseline_hash_join_idx_impl(const int8_t* hash_buff,
                                                         const int8_t* key,
                                                         const size_t key_bytes,
                                                         const size_t entry_count) {
-  const uint32_t h = MurmurHash1(key, key_bytes, 0) % entry_count;
+  const uint32_t h = MapdHash1(key, key_bytes, 0) % entry_count;
   int64_t matching_slot = get_matching_slot<T>(hash_buff, h, key, key_bytes);
   if (matching_slot != kNoMatch) {
     return matching_slot;
@@ -134,7 +134,7 @@ FORCE_INLINE DEVICE int64_t get_composite_key_index_impl(const T* key,
                                                          const size_t key_component_count,
                                                          const T* composite_key_dict,
                                                          const size_t entry_count) {
-  const uint32_t h = MurmurHash1(key, key_component_count * sizeof(T), 0) % entry_count;
+  const uint32_t h = MapdHash1(key, key_component_count * sizeof(T), 0) % entry_count;
   uint32_t off = h * key_component_count;
   if (keys_are_equal(&composite_key_dict[off], key, key_component_count)) {
     return h;
